@@ -1,0 +1,1272 @@
+GAS LISTING /tmp/ccKynANz.s 			page 1
+
+
+   1              		.file	"SyscallC.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	_Z7syscallmmmmm
+   9              	_Z7syscallmmmmm:
+  10              	.LFB3:
+  11              		.file 1 "src/SyscallC.cpp"
+   1:src/SyscallC.cpp **** #include "../h/SyscallC.hpp"
+   2:src/SyscallC.cpp **** #include "../h/MemoryAllocator.hpp"
+   3:src/SyscallC.cpp **** 
+   4:src/SyscallC.cpp **** void syscall(uint64 op_code, uint64 arg1 = 0, uint64 arg2 = 0, uint64 arg3 = 0, uint64 arg4 = 0) {
+  12              		.loc 1 4 98
+  13              		.cfi_startproc
+  14              	.LVL0:
+  15 0000 130101FF 		addi	sp,sp,-16
+  16              		.cfi_def_cfa_offset 16
+  17 0004 23348100 		sd	s0,8(sp)
+  18              		.cfi_offset 8, -8
+  19 0008 13040101 		addi	s0,sp,16
+  20              		.cfi_def_cfa 8, 0
+   5:src/SyscallC.cpp ****     __asm__ volatile("ecall");
+  21              		.loc 1 5 5
+  22              		.loc 1 5 30 is_stmt 0
+  23              	#APP
+  24              	# 5 "src/SyscallC.cpp" 1
+   6              	}
+  25              		ecall
+  26              	# 0 "" 2
+  27              		.loc 1 6 1
+  28              	#NO_APP
+  29 0010 03348100 		ld	s0,8(sp)
+  30              		.cfi_restore 8
+  31              		.cfi_def_cfa 2, 16
+  32 0014 13010101 		addi	sp,sp,16
+  33              		.cfi_def_cfa_offset 0
+  34 0018 67800000 		jr	ra
+  35              		.cfi_endproc
+  36              	.LFE3:
+  38              		.align	2
+  39              		.globl	_Z9mem_allocm
+  41              	_Z9mem_allocm:
+  42              	.LFB4:
+   7:src/SyscallC.cpp **** 
+   8:src/SyscallC.cpp **** void* mem_alloc (size_t size) {
+  43              		.loc 1 8 31 is_stmt 1
+  44              		.cfi_startproc
+  45              	.LVL1:
+   9:src/SyscallC.cpp ****     if (size==0) return nullptr;
+  46              		.loc 1 9 5
+  47 001c 630C0504 		beqz	a0,.L6
+   8:src/SyscallC.cpp ****     if (size==0) return nullptr;
+  48              		.loc 1 8 31 is_stmt 0
+  49 0020 130101FF 		addi	sp,sp,-16
+  50              		.cfi_def_cfa_offset 16
+GAS LISTING /tmp/ccKynANz.s 			page 2
+
+
+  51 0024 23341100 		sd	ra,8(sp)
+  52 0028 23308100 		sd	s0,0(sp)
+  53              		.cfi_offset 1, -8
+  54              		.cfi_offset 8, -16
+  55 002c 13040101 		addi	s0,sp,16
+  56              		.cfi_def_cfa 8, 0
+  10:src/SyscallC.cpp ****     void volatile *retVal;
+  57              		.loc 1 10 5 is_stmt 1
+  11:src/SyscallC.cpp ****     uint64 totalSize = size + sizeof(MemoryAllocator::FullBlock) - 1;   ///////////////////////////
+  58              		.loc 1 11 5
+  59              		.loc 1 11 12 is_stmt 0
+  60 0030 93057501 		addi	a1,a0,23
+  61              	.LVL2:
+  12:src/SyscallC.cpp ****     if (totalSize % MEM_BLOCK_SIZE != 0) {
+  62              		.loc 1 12 5 is_stmt 1
+  63              		.loc 1 12 19 is_stmt 0
+  64 0034 93F7F503 		andi	a5,a1,63
+  65              		.loc 1 12 5
+  66 0038 63860700 		beqz	a5,.L5
+  13:src/SyscallC.cpp ****         totalSize += (MEM_BLOCK_SIZE - (totalSize % MEM_BLOCK_SIZE));
+  67              		.loc 1 13 9 is_stmt 1
+  68              		.loc 1 13 19 is_stmt 0
+  69 003c 93F505FC 		andi	a1,a1,-64
+  70              	.LVL3:
+  71 0040 93850504 		addi	a1,a1,64
+  72              	.LVL4:
+  73              	.L5:
+  14:src/SyscallC.cpp ****     }
+  15:src/SyscallC.cpp ****     uint64 numOfBlocks = totalSize / MEM_BLOCK_SIZE;
+  74              		.loc 1 15 5 is_stmt 1
+  16:src/SyscallC.cpp ****     syscall((uint64)(SyscallCodes::MEM_ALLOC), numOfBlocks);
+  75              		.loc 1 16 5
+  76              		.loc 1 16 12 is_stmt 0
+  77 0044 13070000 		li	a4,0
+  78 0048 93060000 		li	a3,0
+  79 004c 13060000 		li	a2,0
+  80 0050 93D56500 		srli	a1,a1,6
+  81              	.LVL5:
+  82 0054 13051000 		li	a0,1
+  83              	.LVL6:
+  84 0058 97000000 		call	_Z7syscallmmmmm
+  84      E7800000 
+  85              	.LVL7:
+  17:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+  86              		.loc 1 17 5 is_stmt 1
+  87              		.loc 1 17 49 is_stmt 0
+  88              	#APP
+  89              	# 17 "src/SyscallC.cpp" 1
+  18              	    return (void*)retVal;
+  90              		mv a0, a0
+  91              	# 0 "" 2
+  92              	.LVL8:
+  93              		.loc 1 18 5 is_stmt 1
+  19:src/SyscallC.cpp **** }
+  94              		.loc 1 19 1 is_stmt 0
+  95              	#NO_APP
+  96 0064 83308100 		ld	ra,8(sp)
+GAS LISTING /tmp/ccKynANz.s 			page 3
+
+
+  97              		.cfi_restore 1
+  98 0068 03340100 		ld	s0,0(sp)
+  99              		.cfi_restore 8
+ 100              		.cfi_def_cfa 2, 16
+ 101 006c 13010101 		addi	sp,sp,16
+ 102              		.cfi_def_cfa_offset 0
+ 103 0070 67800000 		jr	ra
+ 104              	.LVL9:
+ 105              	.L6:
+   9:src/SyscallC.cpp ****     void volatile *retVal;
+ 106              		.loc 1 9 25
+ 107 0074 13050000 		li	a0,0
+ 108              	.LVL10:
+ 109              		.loc 1 19 1
+ 110 0078 67800000 		ret
+ 111              		.cfi_endproc
+ 112              	.LFE4:
+ 114              		.align	2
+ 115              		.globl	_Z8mem_freePv
+ 117              	_Z8mem_freePv:
+ 118              	.LFB5:
+  20:src/SyscallC.cpp **** 
+  21:src/SyscallC.cpp **** int mem_free(void* ptr) {
+ 119              		.loc 1 21 25 is_stmt 1
+ 120              		.cfi_startproc
+ 121              	.LVL11:
+ 122 007c 130101FE 		addi	sp,sp,-32
+ 123              		.cfi_def_cfa_offset 32
+ 124 0080 233C1100 		sd	ra,24(sp)
+ 125 0084 23388100 		sd	s0,16(sp)
+ 126              		.cfi_offset 1, -8
+ 127              		.cfi_offset 8, -16
+ 128 0088 13040102 		addi	s0,sp,32
+ 129              		.cfi_def_cfa 8, 0
+ 130 008c 93050500 		mv	a1,a0
+  22:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::MEM_FREE), (uint64)ptr);
+ 131              		.loc 1 22 5
+ 132              		.loc 1 22 12 is_stmt 0
+ 133 0090 13070000 		li	a4,0
+ 134 0094 93060000 		li	a3,0
+ 135 0098 13060000 		li	a2,0
+ 136 009c 13052000 		li	a0,2
+ 137              	.LVL12:
+ 138 00a0 97000000 		call	_Z7syscallmmmmm
+ 138      E7800000 
+ 139              	.LVL13:
+  23:src/SyscallC.cpp ****     int volatile retVal;
+ 140              		.loc 1 23 5 is_stmt 1
+  24:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 141              		.loc 1 24 5
+ 142              		.loc 1 24 49 is_stmt 0
+ 143              	#APP
+ 144              	# 24 "src/SyscallC.cpp" 1
+  25              	    return retVal;
+ 145              		mv a5, a0
+ 146              	# 0 "" 2
+ 147              	#NO_APP
+GAS LISTING /tmp/ccKynANz.s 			page 4
+
+
+ 148 00ac 2326F4FE 		sw	a5,-20(s0)
+ 149              		.loc 1 25 5 is_stmt 1
+ 150              		.loc 1 25 12 is_stmt 0
+ 151 00b0 0325C4FE 		lw	a0,-20(s0)
+  26:src/SyscallC.cpp **** }
+ 152              		.loc 1 26 1
+ 153 00b4 1B050500 		sext.w	a0,a0
+ 154 00b8 83308101 		ld	ra,24(sp)
+ 155              		.cfi_restore 1
+ 156 00bc 03340101 		ld	s0,16(sp)
+ 157              		.cfi_restore 8
+ 158              		.cfi_def_cfa 2, 32
+ 159 00c0 13010102 		addi	sp,sp,32
+ 160              		.cfi_def_cfa_offset 0
+ 161 00c4 67800000 		jr	ra
+ 162              		.cfi_endproc
+ 163              	.LFE5:
+ 165              		.align	2
+ 166              		.globl	_Z13thread_createPP3TCBPFvPvES2_
+ 168              	_Z13thread_createPP3TCBPFvPvES2_:
+ 169              	.LFB6:
+  27:src/SyscallC.cpp **** 
+  28:src/SyscallC.cpp **** int thread_create(thread_t *handle, void (*routine)(void *), void *arg) {
+ 170              		.loc 1 28 73 is_stmt 1
+ 171              		.cfi_startproc
+ 172              	.LVL14:
+ 173 00c8 130101FD 		addi	sp,sp,-48
+ 174              		.cfi_def_cfa_offset 48
+ 175 00cc 23341102 		sd	ra,40(sp)
+ 176 00d0 23308102 		sd	s0,32(sp)
+ 177 00d4 233C9100 		sd	s1,24(sp)
+ 178 00d8 23382101 		sd	s2,16(sp)
+ 179 00dc 23343101 		sd	s3,8(sp)
+ 180              		.cfi_offset 1, -8
+ 181              		.cfi_offset 8, -16
+ 182              		.cfi_offset 9, -24
+ 183              		.cfi_offset 18, -32
+ 184              		.cfi_offset 19, -40
+ 185 00e0 13040103 		addi	s0,sp,48
+ 186              		.cfi_def_cfa 8, 0
+ 187 00e4 13090500 		mv	s2,a0
+ 188 00e8 93840500 		mv	s1,a1
+ 189 00ec 93090600 		mv	s3,a2
+  29:src/SyscallC.cpp ****     void* stack=nullptr;
+ 190              		.loc 1 29 5
+ 191              	.LVL15:
+  30:src/SyscallC.cpp ****     if (routine) {
+ 192              		.loc 1 30 5
+ 193 00f0 638A0504 		beqz	a1,.L16
+  31:src/SyscallC.cpp ****         stack=mem_alloc(DEFAULT_STACK_SIZE);
+ 194              		.loc 1 31 9
+ 195              		.loc 1 31 24 is_stmt 0
+ 196 00f4 37150000 		li	a0,4096
+ 197              	.LVL16:
+ 198 00f8 97000000 		call	_Z9mem_allocm
+ 198      E7800000 
+ 199              	.LVL17:
+GAS LISTING /tmp/ccKynANz.s 			page 5
+
+
+ 200 0100 13070500 		mv	a4,a0
+ 201              	.LVL18:
+  32:src/SyscallC.cpp ****         if (!stack) return -1;
+ 202              		.loc 1 32 9 is_stmt 1
+ 203 0104 63040504 		beqz	a0,.L19
+ 204              	.LVL19:
+ 205              	.L14:
+  33:src/SyscallC.cpp ****     }
+  34:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::THREAD_CREATE), (uint64)handle, (uint64)routine, (uint64)arg, (uin
+ 206              		.loc 1 34 5
+ 207              		.loc 1 34 12 is_stmt 0
+ 208 0108 93860900 		mv	a3,s3
+ 209 010c 13860400 		mv	a2,s1
+ 210 0110 93050900 		mv	a1,s2
+ 211 0114 13051001 		li	a0,17
+ 212 0118 97000000 		call	_Z7syscallmmmmm
+ 212      E7800000 
+ 213              	.LVL20:
+  35:src/SyscallC.cpp ****     int retVal;
+ 214              		.loc 1 35 5 is_stmt 1
+  36:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 215              		.loc 1 36 5
+ 216              		.loc 1 36 49 is_stmt 0
+ 217              	#APP
+ 218              	# 36 "src/SyscallC.cpp" 1
+  37              	    return retVal;
+ 219              		mv a0, a0
+ 220              	# 0 "" 2
+ 221              	#NO_APP
+ 222 0124 1B050500 		sext.w	a0,a0
+ 223              	.LVL21:
+ 224              		.loc 1 37 5 is_stmt 1
+ 225              	.L15:
+  38:src/SyscallC.cpp **** }
+ 226              		.loc 1 38 1 is_stmt 0
+ 227 0128 83308102 		ld	ra,40(sp)
+ 228              		.cfi_remember_state
+ 229              		.cfi_restore 1
+ 230 012c 03340102 		ld	s0,32(sp)
+ 231              		.cfi_restore 8
+ 232              		.cfi_def_cfa 2, 48
+ 233 0130 83348101 		ld	s1,24(sp)
+ 234              		.cfi_restore 9
+ 235              	.LVL22:
+ 236 0134 03390101 		ld	s2,16(sp)
+ 237              		.cfi_restore 18
+ 238              	.LVL23:
+ 239 0138 83398100 		ld	s3,8(sp)
+ 240              		.cfi_restore 19
+ 241              	.LVL24:
+ 242 013c 13010103 		addi	sp,sp,48
+ 243              		.cfi_def_cfa_offset 0
+ 244 0140 67800000 		jr	ra
+ 245              	.LVL25:
+ 246              	.L16:
+ 247              		.cfi_restore_state
+  29:src/SyscallC.cpp ****     if (routine) {
+GAS LISTING /tmp/ccKynANz.s 			page 6
+
+
+ 248              		.loc 1 29 11
+ 249 0144 13070000 		li	a4,0
+ 250 0148 6FF01FFC 		j	.L14
+ 251              	.LVL26:
+ 252              	.L19:
+  32:src/SyscallC.cpp ****     }
+ 253              		.loc 1 32 29
+ 254 014c 1305F0FF 		li	a0,-1
+ 255              	.LVL27:
+ 256 0150 6FF09FFD 		j	.L15
+ 257              		.cfi_endproc
+ 258              	.LFE6:
+ 260              		.align	2
+ 261              		.globl	_Z11thread_exitv
+ 263              	_Z11thread_exitv:
+ 264              	.LFB7:
+  39:src/SyscallC.cpp **** 
+  40:src/SyscallC.cpp **** int thread_exit() {
+ 265              		.loc 1 40 19 is_stmt 1
+ 266              		.cfi_startproc
+ 267 0154 130101FF 		addi	sp,sp,-16
+ 268              		.cfi_def_cfa_offset 16
+ 269 0158 23341100 		sd	ra,8(sp)
+ 270 015c 23308100 		sd	s0,0(sp)
+ 271              		.cfi_offset 1, -8
+ 272              		.cfi_offset 8, -16
+ 273 0160 13040101 		addi	s0,sp,16
+ 274              		.cfi_def_cfa 8, 0
+  41:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::THREAD_EXIT));
+ 275              		.loc 1 41 5
+ 276              		.loc 1 41 12 is_stmt 0
+ 277 0164 13070000 		li	a4,0
+ 278 0168 93060000 		li	a3,0
+ 279 016c 13060000 		li	a2,0
+ 280 0170 93050000 		li	a1,0
+ 281 0174 13052001 		li	a0,18
+ 282 0178 97000000 		call	_Z7syscallmmmmm
+ 282      E7800000 
+ 283              	.LVL28:
+  42:src/SyscallC.cpp ****     int retVal;
+ 284              		.loc 1 42 5 is_stmt 1
+  43:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 285              		.loc 1 43 5
+ 286              		.loc 1 43 49 is_stmt 0
+ 287              	#APP
+ 288              	# 43 "src/SyscallC.cpp" 1
+  44              	    return retVal;
+ 289              		mv a0, a0
+ 290              	# 0 "" 2
+ 291              	.LVL29:
+ 292              		.loc 1 44 5 is_stmt 1
+  45:src/SyscallC.cpp **** }
+ 293              		.loc 1 45 1 is_stmt 0
+ 294              	#NO_APP
+ 295 0184 1B050500 		sext.w	a0,a0
+ 296 0188 83308100 		ld	ra,8(sp)
+ 297              		.cfi_restore 1
+GAS LISTING /tmp/ccKynANz.s 			page 7
+
+
+ 298 018c 03340100 		ld	s0,0(sp)
+ 299              		.cfi_restore 8
+ 300              		.cfi_def_cfa 2, 16
+ 301 0190 13010101 		addi	sp,sp,16
+ 302              		.cfi_def_cfa_offset 0
+ 303 0194 67800000 		jr	ra
+ 304              		.cfi_endproc
+ 305              	.LFE7:
+ 307              		.align	2
+ 308              		.globl	_Z15thread_dispatchv
+ 310              	_Z15thread_dispatchv:
+ 311              	.LFB8:
+  46:src/SyscallC.cpp **** 
+  47:src/SyscallC.cpp **** void thread_dispatch() {
+ 312              		.loc 1 47 24 is_stmt 1
+ 313              		.cfi_startproc
+ 314 0198 130101FF 		addi	sp,sp,-16
+ 315              		.cfi_def_cfa_offset 16
+ 316 019c 23341100 		sd	ra,8(sp)
+ 317 01a0 23308100 		sd	s0,0(sp)
+ 318              		.cfi_offset 1, -8
+ 319              		.cfi_offset 8, -16
+ 320 01a4 13040101 		addi	s0,sp,16
+ 321              		.cfi_def_cfa 8, 0
+  48:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::THREAD_DISPATCH));
+ 322              		.loc 1 48 5
+ 323              		.loc 1 48 12 is_stmt 0
+ 324 01a8 13070000 		li	a4,0
+ 325 01ac 93060000 		li	a3,0
+ 326 01b0 13060000 		li	a2,0
+ 327 01b4 93050000 		li	a1,0
+ 328 01b8 13053001 		li	a0,19
+ 329 01bc 97000000 		call	_Z7syscallmmmmm
+ 329      E7800000 
+ 330              	.LVL30:
+  49:src/SyscallC.cpp **** }
+ 331              		.loc 1 49 1
+ 332 01c4 83308100 		ld	ra,8(sp)
+ 333              		.cfi_restore 1
+ 334 01c8 03340100 		ld	s0,0(sp)
+ 335              		.cfi_restore 8
+ 336              		.cfi_def_cfa 2, 16
+ 337 01cc 13010101 		addi	sp,sp,16
+ 338              		.cfi_def_cfa_offset 0
+ 339 01d0 67800000 		jr	ra
+ 340              		.cfi_endproc
+ 341              	.LFE8:
+ 343              		.align	2
+ 344              		.globl	_Z8sem_openPP3Semj
+ 346              	_Z8sem_openPP3Semj:
+ 347              	.LFB9:
+  50:src/SyscallC.cpp **** 
+  51:src/SyscallC.cpp **** int sem_open(sem_t* handle, unsigned init) {
+ 348              		.loc 1 51 44 is_stmt 1
+ 349              		.cfi_startproc
+ 350              	.LVL31:
+ 351 01d4 130101FF 		addi	sp,sp,-16
+GAS LISTING /tmp/ccKynANz.s 			page 8
+
+
+ 352              		.cfi_def_cfa_offset 16
+ 353 01d8 23341100 		sd	ra,8(sp)
+ 354 01dc 23308100 		sd	s0,0(sp)
+ 355              		.cfi_offset 1, -8
+ 356              		.cfi_offset 8, -16
+ 357 01e0 13040101 		addi	s0,sp,16
+ 358              		.cfi_def_cfa 8, 0
+  52:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::SEM_OPEN), (uint64)handle, init);
+ 359              		.loc 1 52 5
+ 360              		.loc 1 52 12 is_stmt 0
+ 361 01e4 13070000 		li	a4,0
+ 362 01e8 93060000 		li	a3,0
+ 363 01ec 13960502 		slli	a2,a1,32
+ 364 01f0 13560602 		srli	a2,a2,32
+ 365 01f4 93050500 		mv	a1,a0
+ 366              	.LVL32:
+ 367 01f8 13051002 		li	a0,33
+ 368              	.LVL33:
+ 369 01fc 97000000 		call	_Z7syscallmmmmm
+ 369      E7800000 
+ 370              	.LVL34:
+  53:src/SyscallC.cpp ****     int retVal;
+ 371              		.loc 1 53 5 is_stmt 1
+  54:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 372              		.loc 1 54 5
+ 373              		.loc 1 54 49 is_stmt 0
+ 374              	#APP
+ 375              	# 54 "src/SyscallC.cpp" 1
+  55              	    return retVal;
+ 376              		mv a0, a0
+ 377              	# 0 "" 2
+ 378              	.LVL35:
+ 379              		.loc 1 55 5 is_stmt 1
+  56:src/SyscallC.cpp **** }
+ 380              		.loc 1 56 1 is_stmt 0
+ 381              	#NO_APP
+ 382 0208 1B050500 		sext.w	a0,a0
+ 383 020c 83308100 		ld	ra,8(sp)
+ 384              		.cfi_restore 1
+ 385 0210 03340100 		ld	s0,0(sp)
+ 386              		.cfi_restore 8
+ 387              		.cfi_def_cfa 2, 16
+ 388 0214 13010101 		addi	sp,sp,16
+ 389              		.cfi_def_cfa_offset 0
+ 390 0218 67800000 		jr	ra
+ 391              		.cfi_endproc
+ 392              	.LFE9:
+ 394              		.align	2
+ 395              		.globl	_Z9sem_closeP3Sem
+ 397              	_Z9sem_closeP3Sem:
+ 398              	.LFB10:
+  57:src/SyscallC.cpp **** 
+  58:src/SyscallC.cpp **** int sem_close(sem_t handle) {
+ 399              		.loc 1 58 29 is_stmt 1
+ 400              		.cfi_startproc
+ 401              	.LVL36:
+ 402 021c 130101FF 		addi	sp,sp,-16
+GAS LISTING /tmp/ccKynANz.s 			page 9
+
+
+ 403              		.cfi_def_cfa_offset 16
+ 404 0220 23341100 		sd	ra,8(sp)
+ 405 0224 23308100 		sd	s0,0(sp)
+ 406              		.cfi_offset 1, -8
+ 407              		.cfi_offset 8, -16
+ 408 0228 13040101 		addi	s0,sp,16
+ 409              		.cfi_def_cfa 8, 0
+ 410 022c 93050500 		mv	a1,a0
+  59:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::SEM_CLOSE), (uint64)handle);
+ 411              		.loc 1 59 5
+ 412              		.loc 1 59 12 is_stmt 0
+ 413 0230 13070000 		li	a4,0
+ 414 0234 93060000 		li	a3,0
+ 415 0238 13060000 		li	a2,0
+ 416 023c 13052002 		li	a0,34
+ 417              	.LVL37:
+ 418 0240 97000000 		call	_Z7syscallmmmmm
+ 418      E7800000 
+ 419              	.LVL38:
+  60:src/SyscallC.cpp ****     int retVal;
+ 420              		.loc 1 60 5 is_stmt 1
+  61:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 421              		.loc 1 61 5
+ 422              		.loc 1 61 49 is_stmt 0
+ 423              	#APP
+ 424              	# 61 "src/SyscallC.cpp" 1
+  62              	    return retVal;
+ 425              		mv a0, a0
+ 426              	# 0 "" 2
+ 427              	.LVL39:
+ 428              		.loc 1 62 5 is_stmt 1
+  63:src/SyscallC.cpp **** }
+ 429              		.loc 1 63 1 is_stmt 0
+ 430              	#NO_APP
+ 431 024c 1B050500 		sext.w	a0,a0
+ 432 0250 83308100 		ld	ra,8(sp)
+ 433              		.cfi_restore 1
+ 434 0254 03340100 		ld	s0,0(sp)
+ 435              		.cfi_restore 8
+ 436              		.cfi_def_cfa 2, 16
+ 437 0258 13010101 		addi	sp,sp,16
+ 438              		.cfi_def_cfa_offset 0
+ 439 025c 67800000 		jr	ra
+ 440              		.cfi_endproc
+ 441              	.LFE10:
+ 443              		.align	2
+ 444              		.globl	_Z8sem_waitP3Sem
+ 446              	_Z8sem_waitP3Sem:
+ 447              	.LFB11:
+  64:src/SyscallC.cpp **** 
+  65:src/SyscallC.cpp **** int sem_wait(sem_t id) {
+ 448              		.loc 1 65 24 is_stmt 1
+ 449              		.cfi_startproc
+ 450              	.LVL40:
+ 451 0260 130101FF 		addi	sp,sp,-16
+ 452              		.cfi_def_cfa_offset 16
+ 453 0264 23341100 		sd	ra,8(sp)
+GAS LISTING /tmp/ccKynANz.s 			page 10
+
+
+ 454 0268 23308100 		sd	s0,0(sp)
+ 455              		.cfi_offset 1, -8
+ 456              		.cfi_offset 8, -16
+ 457 026c 13040101 		addi	s0,sp,16
+ 458              		.cfi_def_cfa 8, 0
+ 459 0270 93050500 		mv	a1,a0
+  66:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::SEM_WAIT), (uint64)id);
+ 460              		.loc 1 66 5
+ 461              		.loc 1 66 12 is_stmt 0
+ 462 0274 13070000 		li	a4,0
+ 463 0278 93060000 		li	a3,0
+ 464 027c 13060000 		li	a2,0
+ 465 0280 13053002 		li	a0,35
+ 466              	.LVL41:
+ 467 0284 97000000 		call	_Z7syscallmmmmm
+ 467      E7800000 
+ 468              	.LVL42:
+  67:src/SyscallC.cpp ****     int retVal;
+ 469              		.loc 1 67 5 is_stmt 1
+  68:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 470              		.loc 1 68 5
+ 471              		.loc 1 68 49 is_stmt 0
+ 472              	#APP
+ 473              	# 68 "src/SyscallC.cpp" 1
+  69              	    return retVal;
+ 474              		mv a0, a0
+ 475              	# 0 "" 2
+ 476              	.LVL43:
+ 477              		.loc 1 69 5 is_stmt 1
+  70:src/SyscallC.cpp **** }
+ 478              		.loc 1 70 1 is_stmt 0
+ 479              	#NO_APP
+ 480 0290 1B050500 		sext.w	a0,a0
+ 481 0294 83308100 		ld	ra,8(sp)
+ 482              		.cfi_restore 1
+ 483 0298 03340100 		ld	s0,0(sp)
+ 484              		.cfi_restore 8
+ 485              		.cfi_def_cfa 2, 16
+ 486 029c 13010101 		addi	sp,sp,16
+ 487              		.cfi_def_cfa_offset 0
+ 488 02a0 67800000 		jr	ra
+ 489              		.cfi_endproc
+ 490              	.LFE11:
+ 492              		.align	2
+ 493              		.globl	_Z11sem_trywaitP3Sem
+ 495              	_Z11sem_trywaitP3Sem:
+ 496              	.LFB12:
+  71:src/SyscallC.cpp **** 
+  72:src/SyscallC.cpp **** int sem_trywait(sem_t id) {
+ 497              		.loc 1 72 27 is_stmt 1
+ 498              		.cfi_startproc
+ 499              	.LVL44:
+ 500 02a4 130101FF 		addi	sp,sp,-16
+ 501              		.cfi_def_cfa_offset 16
+ 502 02a8 23341100 		sd	ra,8(sp)
+ 503 02ac 23308100 		sd	s0,0(sp)
+ 504              		.cfi_offset 1, -8
+GAS LISTING /tmp/ccKynANz.s 			page 11
+
+
+ 505              		.cfi_offset 8, -16
+ 506 02b0 13040101 		addi	s0,sp,16
+ 507              		.cfi_def_cfa 8, 0
+ 508 02b4 93050500 		mv	a1,a0
+  73:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::SEM_TRYWAIT), (uint64)id);
+ 509              		.loc 1 73 5
+ 510              		.loc 1 73 12 is_stmt 0
+ 511 02b8 13070000 		li	a4,0
+ 512 02bc 93060000 		li	a3,0
+ 513 02c0 13060000 		li	a2,0
+ 514 02c4 13056002 		li	a0,38
+ 515              	.LVL45:
+ 516 02c8 97000000 		call	_Z7syscallmmmmm
+ 516      E7800000 
+ 517              	.LVL46:
+  74:src/SyscallC.cpp ****     int retVal;
+ 518              		.loc 1 74 5 is_stmt 1
+  75:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 519              		.loc 1 75 5
+ 520              		.loc 1 75 49 is_stmt 0
+ 521              	#APP
+ 522              	# 75 "src/SyscallC.cpp" 1
+  76              	    return retVal;
+ 523              		mv a0, a0
+ 524              	# 0 "" 2
+ 525              	.LVL47:
+ 526              		.loc 1 76 5 is_stmt 1
+  77:src/SyscallC.cpp **** }
+ 527              		.loc 1 77 1 is_stmt 0
+ 528              	#NO_APP
+ 529 02d4 1B050500 		sext.w	a0,a0
+ 530 02d8 83308100 		ld	ra,8(sp)
+ 531              		.cfi_restore 1
+ 532 02dc 03340100 		ld	s0,0(sp)
+ 533              		.cfi_restore 8
+ 534              		.cfi_def_cfa 2, 16
+ 535 02e0 13010101 		addi	sp,sp,16
+ 536              		.cfi_def_cfa_offset 0
+ 537 02e4 67800000 		jr	ra
+ 538              		.cfi_endproc
+ 539              	.LFE12:
+ 541              		.align	2
+ 542              		.globl	_Z10sem_signalP3Sem
+ 544              	_Z10sem_signalP3Sem:
+ 545              	.LFB13:
+  78:src/SyscallC.cpp **** 
+  79:src/SyscallC.cpp **** int sem_signal(sem_t id) {
+ 546              		.loc 1 79 26 is_stmt 1
+ 547              		.cfi_startproc
+ 548              	.LVL48:
+ 549 02e8 130101FF 		addi	sp,sp,-16
+ 550              		.cfi_def_cfa_offset 16
+ 551 02ec 23341100 		sd	ra,8(sp)
+ 552 02f0 23308100 		sd	s0,0(sp)
+ 553              		.cfi_offset 1, -8
+ 554              		.cfi_offset 8, -16
+ 555 02f4 13040101 		addi	s0,sp,16
+GAS LISTING /tmp/ccKynANz.s 			page 12
+
+
+ 556              		.cfi_def_cfa 8, 0
+ 557 02f8 93050500 		mv	a1,a0
+  80:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::SEM_SIGNAL), (uint64)id);
+ 558              		.loc 1 80 5
+ 559              		.loc 1 80 12 is_stmt 0
+ 560 02fc 13070000 		li	a4,0
+ 561 0300 93060000 		li	a3,0
+ 562 0304 13060000 		li	a2,0
+ 563 0308 13054002 		li	a0,36
+ 564              	.LVL49:
+ 565 030c 97000000 		call	_Z7syscallmmmmm
+ 565      E7800000 
+ 566              	.LVL50:
+  81:src/SyscallC.cpp ****     int retVal;
+ 567              		.loc 1 81 5 is_stmt 1
+  82:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 568              		.loc 1 82 5
+ 569              		.loc 1 82 49 is_stmt 0
+ 570              	#APP
+ 571              	# 82 "src/SyscallC.cpp" 1
+  83              	    return retVal;
+ 572              		mv a0, a0
+ 573              	# 0 "" 2
+ 574              	.LVL51:
+ 575              		.loc 1 83 5 is_stmt 1
+  84:src/SyscallC.cpp **** }
+ 576              		.loc 1 84 1 is_stmt 0
+ 577              	#NO_APP
+ 578 0318 1B050500 		sext.w	a0,a0
+ 579 031c 83308100 		ld	ra,8(sp)
+ 580              		.cfi_restore 1
+ 581 0320 03340100 		ld	s0,0(sp)
+ 582              		.cfi_restore 8
+ 583              		.cfi_def_cfa 2, 16
+ 584 0324 13010101 		addi	sp,sp,16
+ 585              		.cfi_def_cfa_offset 0
+ 586 0328 67800000 		jr	ra
+ 587              		.cfi_endproc
+ 588              	.LFE13:
+ 590              		.align	2
+ 591              		.globl	_Z4getcv
+ 593              	_Z4getcv:
+ 594              	.LFB14:
+  85:src/SyscallC.cpp **** 
+  86:src/SyscallC.cpp **** char getc() {
+ 595              		.loc 1 86 13 is_stmt 1
+ 596              		.cfi_startproc
+ 597 032c 130101FF 		addi	sp,sp,-16
+ 598              		.cfi_def_cfa_offset 16
+ 599 0330 23341100 		sd	ra,8(sp)
+ 600 0334 23308100 		sd	s0,0(sp)
+ 601              		.cfi_offset 1, -8
+ 602              		.cfi_offset 8, -16
+ 603 0338 13040101 		addi	s0,sp,16
+ 604              		.cfi_def_cfa 8, 0
+  87:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::GETC));
+ 605              		.loc 1 87 5
+GAS LISTING /tmp/ccKynANz.s 			page 13
+
+
+ 606              		.loc 1 87 12 is_stmt 0
+ 607 033c 13070000 		li	a4,0
+ 608 0340 93060000 		li	a3,0
+ 609 0344 13060000 		li	a2,0
+ 610 0348 93050000 		li	a1,0
+ 611 034c 13051004 		li	a0,65
+ 612 0350 97000000 		call	_Z7syscallmmmmm
+ 612      E7800000 
+ 613              	.LVL52:
+  88:src/SyscallC.cpp ****     char retVal;
+ 614              		.loc 1 88 5 is_stmt 1
+  89:src/SyscallC.cpp ****     __asm__ volatile("mv %0, a0" : "=r"(retVal));
+ 615              		.loc 1 89 5
+ 616              		.loc 1 89 49 is_stmt 0
+ 617              	#APP
+ 618              	# 89 "src/SyscallC.cpp" 1
+  90              	    return retVal;
+ 619              		mv a0, a0
+ 620              	# 0 "" 2
+ 621              	.LVL53:
+ 622              		.loc 1 90 5 is_stmt 1
+  91:src/SyscallC.cpp **** }
+ 623              		.loc 1 91 1 is_stmt 0
+ 624              	#NO_APP
+ 625 035c 1375F50F 		andi	a0,a0,0xff
+ 626 0360 83308100 		ld	ra,8(sp)
+ 627              		.cfi_restore 1
+ 628 0364 03340100 		ld	s0,0(sp)
+ 629              		.cfi_restore 8
+ 630              		.cfi_def_cfa 2, 16
+ 631 0368 13010101 		addi	sp,sp,16
+ 632              		.cfi_def_cfa_offset 0
+ 633 036c 67800000 		jr	ra
+ 634              		.cfi_endproc
+ 635              	.LFE14:
+ 637              		.align	2
+ 638              		.globl	_Z4putcc
+ 640              	_Z4putcc:
+ 641              	.LFB15:
+  92:src/SyscallC.cpp **** 
+  93:src/SyscallC.cpp **** void putc(char c) {
+ 642              		.loc 1 93 19 is_stmt 1
+ 643              		.cfi_startproc
+ 644              	.LVL54:
+ 645 0370 130101FF 		addi	sp,sp,-16
+ 646              		.cfi_def_cfa_offset 16
+ 647 0374 23341100 		sd	ra,8(sp)
+ 648 0378 23308100 		sd	s0,0(sp)
+ 649              		.cfi_offset 1, -8
+ 650              		.cfi_offset 8, -16
+ 651 037c 13040101 		addi	s0,sp,16
+ 652              		.cfi_def_cfa 8, 0
+ 653 0380 93050500 		mv	a1,a0
+  94:src/SyscallC.cpp ****     syscall(uint64(SyscallCodes::PUTC), c);
+ 654              		.loc 1 94 5
+ 655              		.loc 1 94 12 is_stmt 0
+ 656 0384 13070000 		li	a4,0
+GAS LISTING /tmp/ccKynANz.s 			page 14
+
+
+ 657 0388 93060000 		li	a3,0
+ 658 038c 13060000 		li	a2,0
+ 659 0390 13052004 		li	a0,66
+ 660              	.LVL55:
+ 661 0394 97000000 		call	_Z7syscallmmmmm
+ 661      E7800000 
+ 662              	.LVL56:
+  95:src/SyscallC.cpp **** }
+ 663              		.loc 1 95 1
+ 664 039c 83308100 		ld	ra,8(sp)
+ 665              		.cfi_restore 1
+ 666 03a0 03340100 		ld	s0,0(sp)
+ 667              		.cfi_restore 8
+ 668              		.cfi_def_cfa 2, 16
+ 669 03a4 13010101 		addi	sp,sp,16
+ 670              		.cfi_def_cfa_offset 0
+ 671 03a8 67800000 		jr	ra
+ 672              		.cfi_endproc
+ 673              	.LFE15:
+ 675              	.Letext0:
+ 676              		.file 2 "src/../h/../lib/hw.h"
+ 677              		.file 3 "src/../h/SyscallC.hpp"
+GAS LISTING /tmp/ccKynANz.s 			page 15
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 SyscallC.cpp
+     /tmp/ccKynANz.s:9      .text:0000000000000000 _Z7syscallmmmmm
+     /tmp/ccKynANz.s:13     .text:0000000000000000 .L0 
+     /tmp/ccKynANz.s:15     .text:0000000000000000 .L0 
+     /tmp/ccKynANz.s:16     .text:0000000000000004 .L0 
+     /tmp/ccKynANz.s:18     .text:0000000000000008 .L0 
+     /tmp/ccKynANz.s:20     .text:000000000000000c .L0 
+     /tmp/ccKynANz.s:22     .text:000000000000000c .L0 
+    src/SyscallC.cpp:5      .text:000000000000000c .L0 
+     /tmp/ccKynANz.s:29     .text:0000000000000010 .L0 
+     /tmp/ccKynANz.s:30     .text:0000000000000014 .L0 
+     /tmp/ccKynANz.s:31     .text:0000000000000014 .L0 
+     /tmp/ccKynANz.s:33     .text:0000000000000018 .L0 
+     /tmp/ccKynANz.s:35     .text:000000000000001c .L0 
+     /tmp/ccKynANz.s:41     .text:000000000000001c _Z9mem_allocm
+     /tmp/ccKynANz.s:44     .text:000000000000001c .L0 
+     /tmp/ccKynANz.s:46     .text:000000000000001c .L0 
+     /tmp/ccKynANz.s:47     .text:000000000000001c .L0 
+     /tmp/ccKynANz.s:49     .text:0000000000000020 .L0 
+     /tmp/ccKynANz.s:50     .text:0000000000000024 .L0 
+     /tmp/ccKynANz.s:53     .text:000000000000002c .L0 
+     /tmp/ccKynANz.s:54     .text:000000000000002c .L0 
+     /tmp/ccKynANz.s:56     .text:0000000000000030 .L0 
+     /tmp/ccKynANz.s:58     .text:0000000000000030 .L0 
+     /tmp/ccKynANz.s:59     .text:0000000000000030 .L0 
+     /tmp/ccKynANz.s:60     .text:0000000000000030 .L0 
+     /tmp/ccKynANz.s:63     .text:0000000000000034 .L0 
+     /tmp/ccKynANz.s:64     .text:0000000000000034 .L0 
+     /tmp/ccKynANz.s:66     .text:0000000000000038 .L0 
+     /tmp/ccKynANz.s:68     .text:000000000000003c .L0 
+     /tmp/ccKynANz.s:69     .text:000000000000003c .L0 
+     /tmp/ccKynANz.s:75     .text:0000000000000044 .L0 
+     /tmp/ccKynANz.s:76     .text:0000000000000044 .L0 
+     /tmp/ccKynANz.s:77     .text:0000000000000044 .L0 
+     /tmp/ccKynANz.s:87     .text:0000000000000060 .L0 
+    src/SyscallC.cpp:17     .text:0000000000000060 .L0 
+     /tmp/ccKynANz.s:94     .text:0000000000000064 .L0 
+     /tmp/ccKynANz.s:96     .text:0000000000000064 .L0 
+     /tmp/ccKynANz.s:97     .text:0000000000000068 .L0 
+     /tmp/ccKynANz.s:99     .text:000000000000006c .L0 
+     /tmp/ccKynANz.s:100    .text:000000000000006c .L0 
+     /tmp/ccKynANz.s:102    .text:0000000000000070 .L0 
+     /tmp/ccKynANz.s:107    .text:0000000000000074 .L0 
+     /tmp/ccKynANz.s:110    .text:0000000000000078 .L0 
+     /tmp/ccKynANz.s:111    .text:000000000000007c .L0 
+     /tmp/ccKynANz.s:117    .text:000000000000007c _Z8mem_freePv
+     /tmp/ccKynANz.s:120    .text:000000000000007c .L0 
+     /tmp/ccKynANz.s:122    .text:000000000000007c .L0 
+     /tmp/ccKynANz.s:123    .text:0000000000000080 .L0 
+     /tmp/ccKynANz.s:126    .text:0000000000000088 .L0 
+     /tmp/ccKynANz.s:127    .text:0000000000000088 .L0 
+     /tmp/ccKynANz.s:129    .text:000000000000008c .L0 
+     /tmp/ccKynANz.s:132    .text:0000000000000090 .L0 
+     /tmp/ccKynANz.s:133    .text:0000000000000090 .L0 
+     /tmp/ccKynANz.s:141    .text:00000000000000a8 .L0 
+     /tmp/ccKynANz.s:142    .text:00000000000000a8 .L0 
+GAS LISTING /tmp/ccKynANz.s 			page 16
+
+
+    src/SyscallC.cpp:24     .text:00000000000000a8 .L0 
+     /tmp/ccKynANz.s:150    .text:00000000000000b0 .L0 
+     /tmp/ccKynANz.s:151    .text:00000000000000b0 .L0 
+     /tmp/ccKynANz.s:153    .text:00000000000000b4 .L0 
+     /tmp/ccKynANz.s:155    .text:00000000000000bc .L0 
+     /tmp/ccKynANz.s:157    .text:00000000000000c0 .L0 
+     /tmp/ccKynANz.s:158    .text:00000000000000c0 .L0 
+     /tmp/ccKynANz.s:160    .text:00000000000000c4 .L0 
+     /tmp/ccKynANz.s:162    .text:00000000000000c8 .L0 
+     /tmp/ccKynANz.s:168    .text:00000000000000c8 _Z13thread_createPP3TCBPFvPvES2_
+     /tmp/ccKynANz.s:171    .text:00000000000000c8 .L0 
+     /tmp/ccKynANz.s:173    .text:00000000000000c8 .L0 
+     /tmp/ccKynANz.s:174    .text:00000000000000cc .L0 
+     /tmp/ccKynANz.s:180    .text:00000000000000e0 .L0 
+     /tmp/ccKynANz.s:181    .text:00000000000000e0 .L0 
+     /tmp/ccKynANz.s:182    .text:00000000000000e0 .L0 
+     /tmp/ccKynANz.s:183    .text:00000000000000e0 .L0 
+     /tmp/ccKynANz.s:184    .text:00000000000000e0 .L0 
+     /tmp/ccKynANz.s:186    .text:00000000000000e4 .L0 
+     /tmp/ccKynANz.s:192    .text:00000000000000f0 .L0 
+     /tmp/ccKynANz.s:193    .text:00000000000000f0 .L0 
+     /tmp/ccKynANz.s:195    .text:00000000000000f4 .L0 
+     /tmp/ccKynANz.s:196    .text:00000000000000f4 .L0 
+     /tmp/ccKynANz.s:203    .text:0000000000000104 .L0 
+     /tmp/ccKynANz.s:207    .text:0000000000000108 .L0 
+     /tmp/ccKynANz.s:208    .text:0000000000000108 .L0 
+     /tmp/ccKynANz.s:215    .text:0000000000000120 .L0 
+     /tmp/ccKynANz.s:216    .text:0000000000000120 .L0 
+    src/SyscallC.cpp:36     .text:0000000000000120 .L0 
+     /tmp/ccKynANz.s:226    .text:0000000000000128 .L0 
+     /tmp/ccKynANz.s:227    .text:0000000000000128 .L0 
+     /tmp/ccKynANz.s:228    .text:000000000000012c .L0 
+     /tmp/ccKynANz.s:229    .text:000000000000012c .L0 
+     /tmp/ccKynANz.s:231    .text:0000000000000130 .L0 
+     /tmp/ccKynANz.s:232    .text:0000000000000130 .L0 
+     /tmp/ccKynANz.s:234    .text:0000000000000134 .L0 
+     /tmp/ccKynANz.s:237    .text:0000000000000138 .L0 
+     /tmp/ccKynANz.s:240    .text:000000000000013c .L0 
+     /tmp/ccKynANz.s:243    .text:0000000000000140 .L0 
+     /tmp/ccKynANz.s:247    .text:0000000000000144 .L0 
+     /tmp/ccKynANz.s:249    .text:0000000000000144 .L0 
+     /tmp/ccKynANz.s:254    .text:000000000000014c .L0 
+     /tmp/ccKynANz.s:257    .text:0000000000000154 .L0 
+     /tmp/ccKynANz.s:263    .text:0000000000000154 _Z11thread_exitv
+     /tmp/ccKynANz.s:266    .text:0000000000000154 .L0 
+     /tmp/ccKynANz.s:267    .text:0000000000000154 .L0 
+     /tmp/ccKynANz.s:268    .text:0000000000000158 .L0 
+     /tmp/ccKynANz.s:271    .text:0000000000000160 .L0 
+     /tmp/ccKynANz.s:272    .text:0000000000000160 .L0 
+     /tmp/ccKynANz.s:274    .text:0000000000000164 .L0 
+     /tmp/ccKynANz.s:276    .text:0000000000000164 .L0 
+     /tmp/ccKynANz.s:277    .text:0000000000000164 .L0 
+     /tmp/ccKynANz.s:285    .text:0000000000000180 .L0 
+     /tmp/ccKynANz.s:286    .text:0000000000000180 .L0 
+    src/SyscallC.cpp:43     .text:0000000000000180 .L0 
+     /tmp/ccKynANz.s:293    .text:0000000000000184 .L0 
+     /tmp/ccKynANz.s:295    .text:0000000000000184 .L0 
+GAS LISTING /tmp/ccKynANz.s 			page 17
+
+
+     /tmp/ccKynANz.s:297    .text:000000000000018c .L0 
+     /tmp/ccKynANz.s:299    .text:0000000000000190 .L0 
+     /tmp/ccKynANz.s:300    .text:0000000000000190 .L0 
+     /tmp/ccKynANz.s:302    .text:0000000000000194 .L0 
+     /tmp/ccKynANz.s:304    .text:0000000000000198 .L0 
+     /tmp/ccKynANz.s:310    .text:0000000000000198 _Z15thread_dispatchv
+     /tmp/ccKynANz.s:313    .text:0000000000000198 .L0 
+     /tmp/ccKynANz.s:314    .text:0000000000000198 .L0 
+     /tmp/ccKynANz.s:315    .text:000000000000019c .L0 
+     /tmp/ccKynANz.s:318    .text:00000000000001a4 .L0 
+     /tmp/ccKynANz.s:319    .text:00000000000001a4 .L0 
+     /tmp/ccKynANz.s:321    .text:00000000000001a8 .L0 
+     /tmp/ccKynANz.s:323    .text:00000000000001a8 .L0 
+     /tmp/ccKynANz.s:324    .text:00000000000001a8 .L0 
+     /tmp/ccKynANz.s:332    .text:00000000000001c4 .L0 
+     /tmp/ccKynANz.s:333    .text:00000000000001c8 .L0 
+     /tmp/ccKynANz.s:335    .text:00000000000001cc .L0 
+     /tmp/ccKynANz.s:336    .text:00000000000001cc .L0 
+     /tmp/ccKynANz.s:338    .text:00000000000001d0 .L0 
+     /tmp/ccKynANz.s:340    .text:00000000000001d4 .L0 
+     /tmp/ccKynANz.s:346    .text:00000000000001d4 _Z8sem_openPP3Semj
+     /tmp/ccKynANz.s:349    .text:00000000000001d4 .L0 
+     /tmp/ccKynANz.s:351    .text:00000000000001d4 .L0 
+     /tmp/ccKynANz.s:352    .text:00000000000001d8 .L0 
+     /tmp/ccKynANz.s:355    .text:00000000000001e0 .L0 
+     /tmp/ccKynANz.s:356    .text:00000000000001e0 .L0 
+     /tmp/ccKynANz.s:358    .text:00000000000001e4 .L0 
+     /tmp/ccKynANz.s:360    .text:00000000000001e4 .L0 
+     /tmp/ccKynANz.s:361    .text:00000000000001e4 .L0 
+     /tmp/ccKynANz.s:372    .text:0000000000000204 .L0 
+     /tmp/ccKynANz.s:373    .text:0000000000000204 .L0 
+    src/SyscallC.cpp:54     .text:0000000000000204 .L0 
+     /tmp/ccKynANz.s:380    .text:0000000000000208 .L0 
+     /tmp/ccKynANz.s:382    .text:0000000000000208 .L0 
+     /tmp/ccKynANz.s:384    .text:0000000000000210 .L0 
+     /tmp/ccKynANz.s:386    .text:0000000000000214 .L0 
+     /tmp/ccKynANz.s:387    .text:0000000000000214 .L0 
+     /tmp/ccKynANz.s:389    .text:0000000000000218 .L0 
+     /tmp/ccKynANz.s:391    .text:000000000000021c .L0 
+     /tmp/ccKynANz.s:397    .text:000000000000021c _Z9sem_closeP3Sem
+     /tmp/ccKynANz.s:400    .text:000000000000021c .L0 
+     /tmp/ccKynANz.s:402    .text:000000000000021c .L0 
+     /tmp/ccKynANz.s:403    .text:0000000000000220 .L0 
+     /tmp/ccKynANz.s:406    .text:0000000000000228 .L0 
+     /tmp/ccKynANz.s:407    .text:0000000000000228 .L0 
+     /tmp/ccKynANz.s:409    .text:000000000000022c .L0 
+     /tmp/ccKynANz.s:412    .text:0000000000000230 .L0 
+     /tmp/ccKynANz.s:413    .text:0000000000000230 .L0 
+     /tmp/ccKynANz.s:421    .text:0000000000000248 .L0 
+     /tmp/ccKynANz.s:422    .text:0000000000000248 .L0 
+    src/SyscallC.cpp:61     .text:0000000000000248 .L0 
+     /tmp/ccKynANz.s:429    .text:000000000000024c .L0 
+     /tmp/ccKynANz.s:431    .text:000000000000024c .L0 
+     /tmp/ccKynANz.s:433    .text:0000000000000254 .L0 
+     /tmp/ccKynANz.s:435    .text:0000000000000258 .L0 
+     /tmp/ccKynANz.s:436    .text:0000000000000258 .L0 
+     /tmp/ccKynANz.s:438    .text:000000000000025c .L0 
+GAS LISTING /tmp/ccKynANz.s 			page 18
+
+
+     /tmp/ccKynANz.s:440    .text:0000000000000260 .L0 
+     /tmp/ccKynANz.s:446    .text:0000000000000260 _Z8sem_waitP3Sem
+     /tmp/ccKynANz.s:449    .text:0000000000000260 .L0 
+     /tmp/ccKynANz.s:451    .text:0000000000000260 .L0 
+     /tmp/ccKynANz.s:452    .text:0000000000000264 .L0 
+     /tmp/ccKynANz.s:455    .text:000000000000026c .L0 
+     /tmp/ccKynANz.s:456    .text:000000000000026c .L0 
+     /tmp/ccKynANz.s:458    .text:0000000000000270 .L0 
+     /tmp/ccKynANz.s:461    .text:0000000000000274 .L0 
+     /tmp/ccKynANz.s:462    .text:0000000000000274 .L0 
+     /tmp/ccKynANz.s:470    .text:000000000000028c .L0 
+     /tmp/ccKynANz.s:471    .text:000000000000028c .L0 
+    src/SyscallC.cpp:68     .text:000000000000028c .L0 
+     /tmp/ccKynANz.s:478    .text:0000000000000290 .L0 
+     /tmp/ccKynANz.s:480    .text:0000000000000290 .L0 
+     /tmp/ccKynANz.s:482    .text:0000000000000298 .L0 
+     /tmp/ccKynANz.s:484    .text:000000000000029c .L0 
+     /tmp/ccKynANz.s:485    .text:000000000000029c .L0 
+     /tmp/ccKynANz.s:487    .text:00000000000002a0 .L0 
+     /tmp/ccKynANz.s:489    .text:00000000000002a4 .L0 
+     /tmp/ccKynANz.s:495    .text:00000000000002a4 _Z11sem_trywaitP3Sem
+     /tmp/ccKynANz.s:498    .text:00000000000002a4 .L0 
+     /tmp/ccKynANz.s:500    .text:00000000000002a4 .L0 
+     /tmp/ccKynANz.s:501    .text:00000000000002a8 .L0 
+     /tmp/ccKynANz.s:504    .text:00000000000002b0 .L0 
+     /tmp/ccKynANz.s:505    .text:00000000000002b0 .L0 
+     /tmp/ccKynANz.s:507    .text:00000000000002b4 .L0 
+     /tmp/ccKynANz.s:510    .text:00000000000002b8 .L0 
+     /tmp/ccKynANz.s:511    .text:00000000000002b8 .L0 
+     /tmp/ccKynANz.s:519    .text:00000000000002d0 .L0 
+     /tmp/ccKynANz.s:520    .text:00000000000002d0 .L0 
+    src/SyscallC.cpp:75     .text:00000000000002d0 .L0 
+     /tmp/ccKynANz.s:527    .text:00000000000002d4 .L0 
+     /tmp/ccKynANz.s:529    .text:00000000000002d4 .L0 
+     /tmp/ccKynANz.s:531    .text:00000000000002dc .L0 
+     /tmp/ccKynANz.s:533    .text:00000000000002e0 .L0 
+     /tmp/ccKynANz.s:534    .text:00000000000002e0 .L0 
+     /tmp/ccKynANz.s:536    .text:00000000000002e4 .L0 
+     /tmp/ccKynANz.s:538    .text:00000000000002e8 .L0 
+     /tmp/ccKynANz.s:544    .text:00000000000002e8 _Z10sem_signalP3Sem
+     /tmp/ccKynANz.s:547    .text:00000000000002e8 .L0 
+     /tmp/ccKynANz.s:549    .text:00000000000002e8 .L0 
+     /tmp/ccKynANz.s:550    .text:00000000000002ec .L0 
+     /tmp/ccKynANz.s:553    .text:00000000000002f4 .L0 
+     /tmp/ccKynANz.s:554    .text:00000000000002f4 .L0 
+     /tmp/ccKynANz.s:556    .text:00000000000002f8 .L0 
+     /tmp/ccKynANz.s:559    .text:00000000000002fc .L0 
+     /tmp/ccKynANz.s:560    .text:00000000000002fc .L0 
+     /tmp/ccKynANz.s:568    .text:0000000000000314 .L0 
+     /tmp/ccKynANz.s:569    .text:0000000000000314 .L0 
+    src/SyscallC.cpp:82     .text:0000000000000314 .L0 
+     /tmp/ccKynANz.s:576    .text:0000000000000318 .L0 
+     /tmp/ccKynANz.s:578    .text:0000000000000318 .L0 
+     /tmp/ccKynANz.s:580    .text:0000000000000320 .L0 
+     /tmp/ccKynANz.s:582    .text:0000000000000324 .L0 
+     /tmp/ccKynANz.s:583    .text:0000000000000324 .L0 
+     /tmp/ccKynANz.s:585    .text:0000000000000328 .L0 
+GAS LISTING /tmp/ccKynANz.s 			page 19
+
+
+     /tmp/ccKynANz.s:587    .text:000000000000032c .L0 
+     /tmp/ccKynANz.s:593    .text:000000000000032c _Z4getcv
+     /tmp/ccKynANz.s:596    .text:000000000000032c .L0 
+     /tmp/ccKynANz.s:597    .text:000000000000032c .L0 
+     /tmp/ccKynANz.s:598    .text:0000000000000330 .L0 
+     /tmp/ccKynANz.s:601    .text:0000000000000338 .L0 
+     /tmp/ccKynANz.s:602    .text:0000000000000338 .L0 
+     /tmp/ccKynANz.s:604    .text:000000000000033c .L0 
+     /tmp/ccKynANz.s:606    .text:000000000000033c .L0 
+     /tmp/ccKynANz.s:607    .text:000000000000033c .L0 
+     /tmp/ccKynANz.s:615    .text:0000000000000358 .L0 
+     /tmp/ccKynANz.s:616    .text:0000000000000358 .L0 
+    src/SyscallC.cpp:89     .text:0000000000000358 .L0 
+     /tmp/ccKynANz.s:623    .text:000000000000035c .L0 
+     /tmp/ccKynANz.s:625    .text:000000000000035c .L0 
+     /tmp/ccKynANz.s:627    .text:0000000000000364 .L0 
+     /tmp/ccKynANz.s:629    .text:0000000000000368 .L0 
+     /tmp/ccKynANz.s:630    .text:0000000000000368 .L0 
+     /tmp/ccKynANz.s:632    .text:000000000000036c .L0 
+     /tmp/ccKynANz.s:634    .text:0000000000000370 .L0 
+     /tmp/ccKynANz.s:640    .text:0000000000000370 _Z4putcc
+     /tmp/ccKynANz.s:643    .text:0000000000000370 .L0 
+     /tmp/ccKynANz.s:645    .text:0000000000000370 .L0 
+     /tmp/ccKynANz.s:646    .text:0000000000000374 .L0 
+     /tmp/ccKynANz.s:649    .text:000000000000037c .L0 
+     /tmp/ccKynANz.s:650    .text:000000000000037c .L0 
+     /tmp/ccKynANz.s:652    .text:0000000000000380 .L0 
+     /tmp/ccKynANz.s:655    .text:0000000000000384 .L0 
+     /tmp/ccKynANz.s:656    .text:0000000000000384 .L0 
+     /tmp/ccKynANz.s:664    .text:000000000000039c .L0 
+     /tmp/ccKynANz.s:665    .text:00000000000003a0 .L0 
+     /tmp/ccKynANz.s:667    .text:00000000000003a4 .L0 
+     /tmp/ccKynANz.s:668    .text:00000000000003a4 .L0 
+     /tmp/ccKynANz.s:670    .text:00000000000003a8 .L0 
+     /tmp/ccKynANz.s:672    .text:00000000000003ac .L0 
+     /tmp/ccKynANz.s:678    .text:00000000000003ac .L0 
+     /tmp/ccKynANz.s:105    .text:0000000000000074 .L6
+     /tmp/ccKynANz.s:73     .text:0000000000000044 .L5
+     /tmp/ccKynANz.s:246    .text:0000000000000144 .L16
+     /tmp/ccKynANz.s:252    .text:000000000000014c .L19
+     /tmp/ccKynANz.s:205    .text:0000000000000108 .L14
+     /tmp/ccKynANz.s:225    .text:0000000000000128 .L15
+     /tmp/ccKynANz.s:1653   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccKynANz.s:2519   .debug_str:0000000000000338 .LASF70
+     /tmp/ccKynANz.s:2401   .debug_str:0000000000000044 .LASF71
+     /tmp/ccKynANz.s:2419   .debug_str:00000000000000ba .LASF72
+     /tmp/ccKynANz.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccKynANz.s:675    .text:00000000000003ac .Letext0
+     /tmp/ccKynANz.s:2387   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccKynANz.s:2477   .debug_str:000000000000021b .LASF0
+     /tmp/ccKynANz.s:2481   .debug_str:0000000000000230 .LASF1
+     /tmp/ccKynANz.s:2469   .debug_str:00000000000001e8 .LASF2
+     /tmp/ccKynANz.s:2459   .debug_str:00000000000001ba .LASF4
+     /tmp/ccKynANz.s:2507   .debug_str:00000000000002fd .LASF3
+     /tmp/ccKynANz.s:2403   .debug_str:0000000000000055 .LASF5
+     /tmp/ccKynANz.s:2485   .debug_str:0000000000000254 .LASF6
+     /tmp/ccKynANz.s:2475   .debug_str:0000000000000208 .LASF7
+GAS LISTING /tmp/ccKynANz.s 			page 20
+
+
+     /tmp/ccKynANz.s:2527   .debug_str:0000000000000420 .LASF8
+     /tmp/ccKynANz.s:2453   .debug_str:000000000000019e .LASF9
+     /tmp/ccKynANz.s:2495   .debug_str:000000000000029e .LASF10
+     /tmp/ccKynANz.s:2521   .debug_str:00000000000003fc .LASF11
+     /tmp/ccKynANz.s:2405   .debug_str:000000000000005c .LASF12
+     /tmp/ccKynANz.s:2391   .debug_str:0000000000000009 .LASF13
+     /tmp/ccKynANz.s:2411   .debug_str:0000000000000087 .LASF14
+     /tmp/ccKynANz.s:2503   .debug_str:00000000000002d3 .LASF15
+     /tmp/ccKynANz.s:2421   .debug_str:00000000000000dd .LASF16
+     /tmp/ccKynANz.s:2471   .debug_str:00000000000001f6 .LASF73
+     /tmp/ccKynANz.s:2513   .debug_str:0000000000000322 .LASF17
+     /tmp/ccKynANz.s:2501   .debug_str:00000000000002ca .LASF18
+     /tmp/ccKynANz.s:2467   .debug_str:00000000000001da .LASF19
+     /tmp/ccKynANz.s:2429   .debug_str:0000000000000115 .LASF20
+     /tmp/ccKynANz.s:2413   .debug_str:0000000000000093 .LASF21
+     /tmp/ccKynANz.s:2525   .debug_str:0000000000000417 .LASF22
+     /tmp/ccKynANz.s:2465   .debug_str:00000000000001d0 .LASF23
+     /tmp/ccKynANz.s:2511   .debug_str:0000000000000319 .LASF24
+     /tmp/ccKynANz.s:2407   .debug_str:000000000000006c .LASF25
+     /tmp/ccKynANz.s:2451   .debug_str:0000000000000192 .LASF26
+     /tmp/ccKynANz.s:2461   .debug_str:00000000000001c1 .LASF27
+     /tmp/ccKynANz.s:2539   .debug_str:0000000000000459 .LASF28
+     /tmp/ccKynANz.s:2389   .debug_str:0000000000000000 .LASF29
+     /tmp/ccKynANz.s:2433   .debug_str:0000000000000133 .LASF30
+     /tmp/ccKynANz.s:2439   .debug_str:0000000000000155 .LASF31
+     /tmp/ccKynANz.s:2473   .debug_str:0000000000000203 .LASF48
+     /tmp/ccKynANz.s:2441   .debug_str:000000000000015a .LASF50
+     /tmp/ccKynANz.s:641    .text:0000000000000370 .LFB15
+     /tmp/ccKynANz.s:673    .text:00000000000003ac .LFE15
+     /tmp/ccKynANz.s:2071   .debug_loc:0000000000000000 .LLST15
+     /tmp/ccKynANz.s:662    .text:000000000000039c .LVL56
+     /tmp/ccKynANz.s:2489   .debug_str:0000000000000273 .LASF32
+     /tmp/ccKynANz.s:2393   .debug_str:0000000000000019 .LASF34
+     /tmp/ccKynANz.s:2399   .debug_str:000000000000003b .LASF36
+     /tmp/ccKynANz.s:594    .text:000000000000032c .LFB14
+     /tmp/ccKynANz.s:635    .text:0000000000000370 .LFE14
+     /tmp/ccKynANz.s:2529   .debug_str:0000000000000430 .LASF33
+     /tmp/ccKynANz.s:613    .text:0000000000000358 .LVL52
+     /tmp/ccKynANz.s:2423   .debug_str:00000000000000f3 .LASF35
+     /tmp/ccKynANz.s:2505   .debug_str:00000000000002e9 .LASF37
+     /tmp/ccKynANz.s:545    .text:00000000000002e8 .LFB13
+     /tmp/ccKynANz.s:588    .text:000000000000032c .LFE13
+     /tmp/ccKynANz.s:2085   .debug_loc:0000000000000039 .LLST14
+     /tmp/ccKynANz.s:566    .text:0000000000000314 .LVL50
+     /tmp/ccKynANz.s:2523   .debug_str:000000000000040b .LASF38
+     /tmp/ccKynANz.s:2447   .debug_str:0000000000000178 .LASF39
+     /tmp/ccKynANz.s:496    .text:00000000000002a4 .LFB12
+     /tmp/ccKynANz.s:539    .text:00000000000002e8 .LFE12
+     /tmp/ccKynANz.s:2103   .debug_loc:0000000000000085 .LLST13
+     /tmp/ccKynANz.s:517    .text:00000000000002d0 .LVL46
+     /tmp/ccKynANz.s:2415   .debug_str:00000000000000a3 .LASF40
+     /tmp/ccKynANz.s:2395   .debug_str:000000000000001e .LASF41
+     /tmp/ccKynANz.s:447    .text:0000000000000260 .LFB11
+     /tmp/ccKynANz.s:490    .text:00000000000002a4 .LFE11
+     /tmp/ccKynANz.s:2121   .debug_loc:00000000000000d1 .LLST12
+     /tmp/ccKynANz.s:468    .text:000000000000028c .LVL42
+     /tmp/ccKynANz.s:2463   .debug_str:00000000000001c6 .LASF42
+GAS LISTING /tmp/ccKynANz.s 			page 21
+
+
+     /tmp/ccKynANz.s:2431   .debug_str:0000000000000121 .LASF43
+     /tmp/ccKynANz.s:398    .text:000000000000021c .LFB10
+     /tmp/ccKynANz.s:441    .text:0000000000000260 .LFE10
+     /tmp/ccKynANz.s:2515   .debug_str:000000000000032c .LASF44
+     /tmp/ccKynANz.s:2139   .debug_loc:000000000000011d .LLST11
+     /tmp/ccKynANz.s:419    .text:0000000000000248 .LVL38
+     /tmp/ccKynANz.s:2437   .debug_str:000000000000014c .LASF45
+     /tmp/ccKynANz.s:2435   .debug_str:0000000000000139 .LASF46
+     /tmp/ccKynANz.s:347    .text:00000000000001d4 .LFB9
+     /tmp/ccKynANz.s:392    .text:000000000000021c .LFE9
+     /tmp/ccKynANz.s:2157   .debug_loc:0000000000000169 .LLST9
+     /tmp/ccKynANz.s:2491   .debug_str:0000000000000278 .LASF47
+     /tmp/ccKynANz.s:2175   .debug_loc:00000000000001b5 .LLST10
+     /tmp/ccKynANz.s:370    .text:0000000000000204 .LVL34
+     /tmp/ccKynANz.s:2443   .debug_str:0000000000000163 .LASF49
+     /tmp/ccKynANz.s:2497   .debug_str:00000000000002ad .LASF51
+     /tmp/ccKynANz.s:311    .text:0000000000000198 .LFB8
+     /tmp/ccKynANz.s:341    .text:00000000000001d4 .LFE8
+     /tmp/ccKynANz.s:330    .text:00000000000001c4 .LVL30
+     /tmp/ccKynANz.s:2397   .debug_str:000000000000002f .LASF52
+     /tmp/ccKynANz.s:2483   .debug_str:0000000000000243 .LASF53
+     /tmp/ccKynANz.s:264    .text:0000000000000154 .LFB7
+     /tmp/ccKynANz.s:305    .text:0000000000000198 .LFE7
+     /tmp/ccKynANz.s:283    .text:0000000000000180 .LVL28
+     /tmp/ccKynANz.s:2425   .debug_str:00000000000000fe .LASF54
+     /tmp/ccKynANz.s:2493   .debug_str:000000000000027d .LASF55
+     /tmp/ccKynANz.s:169    .text:00000000000000c8 .LFB6
+     /tmp/ccKynANz.s:258    .text:0000000000000154 .LFE6
+     /tmp/ccKynANz.s:2189   .debug_loc:00000000000001ee .LLST5
+     /tmp/ccKynANz.s:2455   .debug_str:00000000000001ac .LASF56
+     /tmp/ccKynANz.s:2215   .debug_loc:0000000000000260 .LLST6
+     /tmp/ccKynANz.s:2237   .debug_loc:00000000000002bf .LLST7
+     /tmp/ccKynANz.s:2457   .debug_str:00000000000001b4 .LASF57
+     /tmp/ccKynANz.s:2263   .debug_loc:0000000000000331 .LLST8
+     /tmp/ccKynANz.s:199    .text:0000000000000100 .LVL17
+     /tmp/ccKynANz.s:213    .text:0000000000000120 .LVL20
+     /tmp/ccKynANz.s:2427   .debug_str:000000000000010c .LASF58
+     /tmp/ccKynANz.s:2537   .debug_str:000000000000044b .LASF59
+     /tmp/ccKynANz.s:118    .text:000000000000007c .LFB5
+     /tmp/ccKynANz.s:163    .text:00000000000000c8 .LFE5
+     /tmp/ccKynANz.s:2292   .debug_loc:00000000000003b5 .LLST4
+     /tmp/ccKynANz.s:139    .text:00000000000000a8 .LVL13
+     /tmp/ccKynANz.s:2509   .debug_str:000000000000030f .LASF60
+     /tmp/ccKynANz.s:2417   .debug_str:00000000000000ac .LASF61
+     /tmp/ccKynANz.s:42     .text:000000000000001c .LFB4
+     /tmp/ccKynANz.s:112    .text:000000000000007c .LFE4
+     /tmp/ccKynANz.s:2517   .debug_str:0000000000000333 .LASF62
+     /tmp/ccKynANz.s:2310   .debug_loc:0000000000000401 .LLST0
+     /tmp/ccKynANz.s:2335   .debug_loc:0000000000000463 .LLST1
+     /tmp/ccKynANz.s:2533   .debug_str:000000000000043c .LASF63
+     /tmp/ccKynANz.s:2342   .debug_loc:0000000000000486 .LLST2
+     /tmp/ccKynANz.s:2487   .debug_str:0000000000000267 .LASF64
+     /tmp/ccKynANz.s:2359   .debug_loc:00000000000004d1 .LLST3
+     /tmp/ccKynANz.s:85     .text:0000000000000060 .LVL7
+     /tmp/ccKynANz.s:2479   .debug_str:0000000000000228 .LASF74
+     /tmp/ccKynANz.s:2409   .debug_str:0000000000000077 .LASF75
+     /tmp/ccKynANz.s:10     .text:0000000000000000 .LFB3
+GAS LISTING /tmp/ccKynANz.s 			page 22
+
+
+     /tmp/ccKynANz.s:36     .text:000000000000001c .LFE3
+     /tmp/ccKynANz.s:2499   .debug_str:00000000000002c2 .LASF65
+     /tmp/ccKynANz.s:2531   .debug_str:0000000000000437 .LASF66
+     /tmp/ccKynANz.s:2445   .debug_str:0000000000000173 .LASF67
+     /tmp/ccKynANz.s:2535   .debug_str:0000000000000446 .LASF68
+     /tmp/ccKynANz.s:2449   .debug_str:000000000000018d .LASF69
+     /tmp/ccKynANz.s:644    .text:0000000000000370 .LVL54
+     /tmp/ccKynANz.s:660    .text:0000000000000394 .LVL55
+     /tmp/ccKynANz.s:548    .text:00000000000002e8 .LVL48
+     /tmp/ccKynANz.s:564    .text:000000000000030c .LVL49
+     /tmp/ccKynANz.s:499    .text:00000000000002a4 .LVL44
+     /tmp/ccKynANz.s:515    .text:00000000000002c8 .LVL45
+     /tmp/ccKynANz.s:450    .text:0000000000000260 .LVL40
+     /tmp/ccKynANz.s:466    .text:0000000000000284 .LVL41
+     /tmp/ccKynANz.s:401    .text:000000000000021c .LVL36
+     /tmp/ccKynANz.s:417    .text:0000000000000240 .LVL37
+     /tmp/ccKynANz.s:350    .text:00000000000001d4 .LVL31
+     /tmp/ccKynANz.s:368    .text:00000000000001fc .LVL33
+     /tmp/ccKynANz.s:366    .text:00000000000001f8 .LVL32
+     /tmp/ccKynANz.s:172    .text:00000000000000c8 .LVL14
+     /tmp/ccKynANz.s:197    .text:00000000000000f8 .LVL16
+     /tmp/ccKynANz.s:238    .text:0000000000000138 .LVL23
+     /tmp/ccKynANz.s:245    .text:0000000000000144 .LVL25
+     /tmp/ccKynANz.s:251    .text:000000000000014c .LVL26
+     /tmp/ccKynANz.s:235    .text:0000000000000134 .LVL22
+     /tmp/ccKynANz.s:241    .text:000000000000013c .LVL24
+     /tmp/ccKynANz.s:191    .text:00000000000000f0 .LVL15
+     /tmp/ccKynANz.s:201    .text:0000000000000104 .LVL18
+     /tmp/ccKynANz.s:204    .text:0000000000000108 .LVL19
+     /tmp/ccKynANz.s:255    .text:0000000000000150 .LVL27
+     /tmp/ccKynANz.s:121    .text:000000000000007c .LVL11
+     /tmp/ccKynANz.s:137    .text:00000000000000a0 .LVL12
+     /tmp/ccKynANz.s:45     .text:000000000000001c .LVL1
+     /tmp/ccKynANz.s:83     .text:0000000000000058 .LVL6
+     /tmp/ccKynANz.s:104    .text:0000000000000074 .LVL9
+     /tmp/ccKynANz.s:108    .text:0000000000000078 .LVL10
+     /tmp/ccKynANz.s:92     .text:0000000000000064 .LVL8
+     /tmp/ccKynANz.s:61     .text:0000000000000034 .LVL2
+     /tmp/ccKynANz.s:70     .text:0000000000000040 .LVL3
+     /tmp/ccKynANz.s:72     .text:0000000000000044 .LVL4
+     /tmp/ccKynANz.s:81     .text:0000000000000054 .LVL5
+     /tmp/ccKynANz.s:679    .debug_info:0000000000000000 .Ldebug_info0
+
+NO UNDEFINED SYMBOLS
